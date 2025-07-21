@@ -11,11 +11,28 @@ exports.createBlog = async (req, res) => {
 };
 
 exports.getBlogs = async (req, res) => {
-  try {
-    const blogs = await Blog.find();
-    res.json(blogs);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+  console.log(`Fetching blogs: page=${page}, limit=${limit}, skip=${skip}`);
+    try {
+    const posts = await Blog.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const total = await Blog.countDocuments();
+
+    res.json({
+      posts,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      totalPosts: total,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('Error fetching blogs:', err);
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
