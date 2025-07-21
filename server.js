@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
-app.use('/api/auth', blogRoutes);
+app.use('/api/blogs', blogRoutes);
 
 
 const PORT = process.env.PORT || 5000;
