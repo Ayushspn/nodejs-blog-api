@@ -16,6 +16,11 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);
 
+// wildcard route for handling 404 errors
+// app.get('*', (req, res) => {
+//   res.status(404).json({ message: 'Route not found' });
+// });
+
 app.use(errorHandler); 
 
 
