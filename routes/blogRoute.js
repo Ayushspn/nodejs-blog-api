@@ -2,15 +2,16 @@ const express = require('express');
 const router = express.Router();
 
 const auth = require('../middleware/authMiddleware');
+const requireRole = require('../middleware/allowedRoles');
 
 const {
   createBlog, getBlogs, getBlogById, updateBlog, deleteBlog
 } = require('../controllers/blogController');
 
-router.post('/', auth, createBlog);
+router.post('/', auth, requireRole(['admin', 'editor']), createBlog);
 router.get('/', auth, getBlogs);
 router.get('/:id',getBlogById);
-router.put('/:id',auth, updateBlog);
-router.delete('/:id', auth, deleteBlog);
+router.put('/:id',auth, requireRole(['admin', 'editor']), updateBlog);
+router.delete('/:id', auth, requireRole(['admin']), deleteBlog);
 
 module.exports = router;
