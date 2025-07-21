@@ -1,13 +1,13 @@
-const Blog = require('../models/Blog');
+const Blog = require("../models/Blog");
 
 exports.createBlog = async (req, res) => {
   try {
     const blog = await Blog.create(req.body);
-    console.log('Blog created:', blog);
+    console.log("Blog created:", blog);
     res.status(201).json(blog);
   } catch (err) {
-  next(err);
-}
+    next(err);
+  }
 };
 
 exports.getBlogs = async (req, res) => {
@@ -21,11 +21,11 @@ exports.getBlogs = async (req, res) => {
   if (status) filter.status = status; //
   if (search) {
     filter.$or = [
-      { title: { $regex: search, $options: 'i' } },
-      { content: { $regex: search, $options: 'i' } }
+      { title: { $regex: search, $options: "i" } },
+      { content: { $regex: search, $options: "i" } },
     ];
   }
-    try {
+  try {
     const posts = await Blog.find(filter)
       .skip(skip)
       .limit(limit)
@@ -41,8 +41,8 @@ exports.getBlogs = async (req, res) => {
       totalPosts: total,
     });
   } catch (err) {
-  next(err);
-}
+    next(err);
+  }
 };
 
 exports.getBlogById = async (req, res) => {
@@ -50,24 +50,42 @@ exports.getBlogById = async (req, res) => {
     const blog = await Blog.findById(req.params.id);
     res.json(blog);
   } catch (err) {
-  next(err);
-}
+    next(err);
+  }
 };
 
 exports.updateBlog = async (req, res) => {
   try {
-    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     res.json(blog);
   } catch (err) {
-  next(err);
-}
+    next(err);
+  }
 };
 
 exports.deleteBlog = async (req, res) => {
   try {
     await Blog.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Blog deleted' });
+    res.json({ message: "Blog deleted" });
   } catch (err) {
-  next(err);
-}
+    next(err);
+  }
+};
+
+exports.addComment = async (req, res, next) => {
+  try {
+    const { user, text } = req.body;
+    const blog = await Blog.findById(req.params.id);
+    console.log(blog);
+    if (!blog) return res.status(404).json({ message: 'Blog not found' });
+    if(! blog.comments) blog.comments = []; // Initialize comments array if it doesn't exist
+    blog.comments.push({ user, text });
+    await blog.save();
+
+    res.status(201).json(blog.comments);
+  } catch (err) {
+    next(err);
+  }
 };
