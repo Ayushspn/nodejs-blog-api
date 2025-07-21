@@ -4,6 +4,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const blogRoutes = require('./routes/blogRoute');
 const authRoutes = require('./routes/authRoute');
+const errorHandler = require('./middleware/errorHandler');
 
 dotenv.config();
 connectDB();
@@ -14,6 +15,8 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);
+
+app.use(errorHandler); 
 
 
 const PORT = process.env.PORT || 5000;

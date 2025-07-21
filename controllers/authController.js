@@ -8,8 +8,8 @@ exports.register = async (req, res) => {
     await user.save();
     res.status(201).json({ message: 'User registered' });
   } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  next(err);
+}
 };
 
 exports.login = async (req, res) => {
@@ -28,6 +28,6 @@ exports.login = async (req, res) => {
     );
     res.json({ token });
   } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  next(err);
+}
 };
