@@ -8,7 +8,7 @@ const {
   createBlog, getBlogs, getBlogById, updateBlog, deleteBlog, addComment
 } = require('../controllers/blogController');
 
-router.post('/', auth, requireRole(['admin', 'editor']), createBlog);
+router.post('/', auth, requireRole(['admin', 'editor','user']), createBlog);
 router.post('/:id/comments', addComment);
 
 router.get('/', auth, getBlogs);
